@@ -2,6 +2,7 @@ services:
   - type: web
     name: rescreen
     runtime: docker
+    rootDir: mysite
     plan: free
     healthCheckPath: /actuator/health
     envVars:
