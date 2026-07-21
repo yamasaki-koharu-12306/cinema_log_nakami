@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <title>管理者ログイン｜中身｜Cinema Log</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-login">
+<main class="admin-login-panel">
+    <a class="admin-login-brand" th:href="@{/}">
+        <strong>中身｜<span>Cinema Log</span></strong>
+        <small>CMS</small>
+    </a>
+
+    <h1>Welcome back.</h1>
+    <p>記事を管理するには、管理者アカウントでログインしてください。</p>
+
+    <form method="post" th:action="@{/login}" class="admin-login-form">
+        <div th:if="${param.error}" class="admin-login-error">
+            ユーザー名またはパスワードが正しくありません。
+        </div>
+
+        <label class="admin-login-field">
+            <span>USERNAME</span>
+            <input name="username" autocomplete="username" required autofocus>
+        </label>
+
+        <label class="admin-login-field">
+            <span>PASSWORD</span>
+            <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+
+        <button class="admin-login-submit" type="submit">LOGIN TO CMS</button>
+    </form>
+
+    <a class="admin-login-back" th:href="@{/}">← 公開サイトへ戻る</a>
+</main>
+</body>
+</html>

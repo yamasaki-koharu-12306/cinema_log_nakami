@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <title>Dashboard｜中身｜Cinema Log CMS</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-shell">
+<div class="admin-layout">
+
+<aside class="admin-sidebar">
+    <div class="admin-brand">
+        <a class="admin-brand__logo" th:href="@{/admin}">中身｜<span>Cinema Log</span></a>
+        <span class="admin-brand__tag">CMS</span>
+    </div>
+
+    <nav class="admin-nav" aria-label="管理メニュー">
+        <p class="admin-nav__label">WORKSPACE</p>
+        <a class="is-active" th:href="@{/admin}">
+            <span class="admin-nav__icon">⌂</span>
+            <span>ダッシュボード</span>
+        </a>
+        <a class="" th:href="@{/admin/movies}">
+            <span class="admin-nav__icon">▦</span>
+            <span>映画記事</span>
+        </a>
+        <a class="" th:href="@{/admin/movies/new}">
+            <span class="admin-nav__icon">＋</span>
+            <span>新規作成</span>
+        </a>
+    </nav>
+
+    <div class="admin-sidebar__bottom">
+        <a class="admin-site-link" th:href="@{/}" target="_blank" rel="noopener">
+            <span>公開サイトを見る</span><span>↗</span>
+        </a>
+        <form method="post" th:action="@{/logout}">
+            <button class="admin-logout" type="submit">
+                <span>ログアウト</span><span>→</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+<header class="admin-mobile-header">
+    <strong>中身｜<span>Cinema Log</span> CMS</strong>
+    <button class="admin-mobile-menu" type="button" aria-label="管理メニューを開く"><i></i></button>
+</header>
+<div class="admin-mobile-backdrop" aria-hidden="true"></div>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <p class="admin-breadcrumb">中身｜Cinema Log / <strong>Dashboard</strong></p>
+            <span class="admin-topbar__status">SYSTEM ONLINE</span>
+        </div>
+
+        <header class="admin-heading">
+            <div>
+                <p class="admin-heading__eyebrow">DASHBOARD</p>
+                <h1>映画と言葉を、管理する。</h1>
+                <p class="admin-heading__description">公開中の記事、下書き、次に書く映画をひとつの場所から整理できます。</p>
+            </div>
+            <a class="admin-primary-button" th:href="@{/admin/movies/new}">
+                <span>＋</span><span>新しい記事を書く</span>
+            </a>
+        </header>
+
+        <section class="admin-stat-grid" aria-label="記事の概要">
+            <a class="admin-stat-card admin-stat-card--accent" th:href="@{/admin/movies}">
+                <span class="admin-stat-card__label">TOTAL ARTICLES</span>
+                <strong th:text="${latest.totalElements}">0</strong>
+                <small>登録されているすべての記事</small>
+            </a>
+            <a class="admin-stat-card" th:href="@{/admin/movies}">
+                <span class="admin-stat-card__label">CURRENT PAGE</span>
+                <strong th:text="${latest.number + 1}">1</strong>
+                <small>管理一覧の現在ページ</small>
+            </a>
+            <a class="admin-stat-card" th:href="@{/admin/movies/new}">
+                <span class="admin-stat-card__label">CREATE NEW</span>
+                <strong>＋</strong>
+                <small>新しい映画レビューを作成</small>
+            </a>
+        </section>
+
+        <section class="admin-section">
+            <div class="admin-section__head">
+                <h2>最近更新した記事</h2>
+                <a th:href="@{/admin/movies}">すべて見る →</a>
+            </div>
+
+            <div class="admin-recent-list" th:if="${!latest.content.isEmpty()}">
+                <a class="admin-recent-item"
+                   th:each="movie : ${latest.content}"
+                   th:href="@{/admin/movies/{id}/edit(id=${movie.id})}">
+                    <div class="admin-recent-item__poster">
+                        <img th:if="${movie.posterUrl}" th:src="${movie.posterUrl}" th:alt="${movie.title}">
+                        <span th:unless="${movie.posterUrl}">NO IMAGE</span>
+                    </div>
+                    <div>
+                        <h3 th:text="${movie.title}">映画タイトル</h3>
+                        <p th:text="|${movie.releaseYear} / ${movie.genre} / ${movie.status}|">2026 / ドラマ / PUBLISHED</p>
+                    </div>
+                    <span class="admin-recent-item__action">編集する →</span>
+                </a>
+            </div>
+
+            <div class="admin-empty" th:if="${latest.content.isEmpty()}">
+                <strong>まだ記事がありません</strong>
+                <p>最初の映画レビューを書いてみましょう。</p>
+                <a class="admin-primary-button" th:href="@{/admin/movies/new}">記事を作成する</a>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

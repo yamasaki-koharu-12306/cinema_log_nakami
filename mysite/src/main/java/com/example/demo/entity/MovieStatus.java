@@ -1,0 +1,1 @@
+package com.example.demo.entity; public enum MovieStatus { DRAFT, PUBLISHED, ARCHIVED }

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <title>映画記事｜Re:Screen CMS</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-shell">
+<div class="admin-layout">
+
+<aside class="admin-sidebar">
+    <div class="admin-brand">
+        <a class="admin-brand__logo" th:href="@{/admin}">Re:<span>Screen</span></a>
+        <span class="admin-brand__tag">CMS</span>
+    </div>
+
+    <nav class="admin-nav" aria-label="管理メニュー">
+        <p class="admin-nav__label">WORKSPACE</p>
+        <a class="" th:href="@{/admin}">
+            <span class="admin-nav__icon">⌂</span>
+            <span>ダッシュボード</span>
+        </a>
+        <a class="is-active" th:href="@{/admin/movies}">
+            <span class="admin-nav__icon">▦</span>
+            <span>映画記事</span>
+        </a>
+        <a class="" th:href="@{/admin/movies/new}">
+            <span class="admin-nav__icon">＋</span>
+            <span>新規作成</span>
+        </a>
+    </nav>
+
+    <div class="admin-sidebar__bottom">
+        <a class="admin-site-link" th:href="@{/}" target="_blank" rel="noopener">
+            <span>公開サイトを見る</span><span>↗</span>
+        </a>
+        <form method="post" th:action="@{/logout}">
+            <button class="admin-logout" type="submit">
+                <span>ログアウト</span><span>→</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+<header class="admin-mobile-header">
+    <strong>Re:<span>Screen</span> CMS</strong>
+    <button class="admin-mobile-menu" type="button" aria-label="管理メニューを開く"><i></i></button>
+</header>
+<div class="admin-mobile-backdrop" aria-hidden="true"></div>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <p class="admin-breadcrumb">Re:Screen / <strong>Movies</strong></p>
+            <span class="admin-topbar__status">SYSTEM ONLINE</span>
+        </div>
+
+        <div class="admin-flash" th:if="${message}" th:text="${message}">保存しました</div>
+
+        <header class="admin-heading">
+            <div>
+                <p class="admin-heading__eyebrow">MOVIE ARTICLES</p>
+                <h1>映画記事</h1>
+                <p class="admin-heading__description">公開状態、評価、記事内容を一覧から確認して編集できます。</p>
+            </div>
+            <a class="admin-primary-button" th:href="@{/admin/movies/new}">
+                <span>＋</span><span>新規作成</span>
+            </a>
+        </header>
+
+        <div class="admin-toolbar">
+            <label class="admin-toolbar__search">
+                <input type="search" data-admin-search placeholder="タイトル、ジャンル、監督名で検索" aria-label="記事を絞り込む">
+                <span>⌕</span>
+            </label>
+            <span class="admin-toolbar__count" th:text="|全 ${movies.totalElements} 件|">全0件</span>
+        </div>
+
+        <div class="admin-table-wrap" th:if="${!movies.content.isEmpty()}">
+            <table class="admin-table">
+                <thead>
+                <tr>
+                    <th>ARTICLE</th>
+                    <th>STATUS</th>
+                    <th>RATING</th>
+                    <th>VIEWS</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="movie : ${movies.content}" data-admin-row>
+                    <td>
+                        <div class="admin-movie-cell">
+                            <div class="admin-movie-cell__poster">
+                                <img th:if="${movie.posterUrl}" th:src="${movie.posterUrl}" th:alt="${movie.title}">
+                                <span th:unless="${movie.posterUrl}">NO IMAGE</span>
+                            </div>
+                            <div>
+                                <h2 th:text="${movie.title}">映画タイトル</h2>
+                                <p th:text="|${movie.releaseYear} / ${movie.genre}|">2026 / ドラマ</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="admin-status"
+                              th:classappend="${movie.status.name() == 'PUBLISHED'} ? ' admin-status--published' : ' admin-status--draft'"
+                              th:text="${movie.status}">PUBLISHED</span>
+                    </td>
+                    <td>
+                        <span class="admin-table__metric">
+                            <strong th:text="${movie.rating}">4.5</strong>
+                            <span>/ 5.0</span>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="admin-table__metric" th:text="${movie.viewCount}">0</span>
+                    </td>
+                    <td>
+                        <div class="admin-row-actions">
+                            <a th:if="${movie.status.name() == 'PUBLISHED'}"
+                               th:href="@{/movies/{slug}(slug=${movie.slug})}"
+                               target="_blank" rel="noopener">表示 ↗</a>
+                            <a th:href="@{/admin/movies/{id}/edit(id=${movie.id})}">編集 →</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="admin-empty" data-admin-search-empty hidden>
+                <strong>該当する記事がありません</strong>
+                <p>別のキーワードで検索してください。</p>
+            </div>
+        </div>
+
+        <div class="admin-empty" th:if="${movies.content.isEmpty()}">
+            <strong>まだ記事がありません</strong>
+            <p>最初の映画レビューを作成してください。</p>
+            <a class="admin-primary-button" th:href="@{/admin/movies/new}">記事を作成する</a>
+        </div>
+
+        <nav class="admin-pagination" th:if="${movies.totalPages > 1}" aria-label="ページ切り替え">
+            <a th:if="${movies.hasPrevious()}" th:href="@{/admin/movies(page=${movies.number - 1})}">← 前へ</a>
+            <span th:text="|${movies.number + 1} / ${movies.totalPages}|">1 / 1</span>
+            <a th:if="${movies.hasNext()}" th:href="@{/admin/movies(page=${movies.number + 1})}">次へ →</a>
+        </nav>
+    </main>
+</div>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

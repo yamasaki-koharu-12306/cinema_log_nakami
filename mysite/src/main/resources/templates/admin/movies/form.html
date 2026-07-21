@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+    <title th:text="${movieId == null ? '新しい映画記事' : '映画記事を編集'} + '｜Re:Screen CMS'">記事編集</title>
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body class="admin-shell">
+<div class="admin-layout">
+
+<aside class="admin-sidebar">
+    <div class="admin-brand">
+        <a class="admin-brand__logo" th:href="@{/admin}">中身｜<span>Cinema Log</span></a>
+        <span class="admin-brand__tag">CMS</span>
+    </div>
+
+    <nav class="admin-nav" aria-label="管理メニュー">
+        <p class="admin-nav__label">WORKSPACE</p>
+        <a class="" th:href="@{/admin}">
+            <span class="admin-nav__icon">⌂</span>
+            <span>ダッシュボード</span>
+        </a>
+        <a class="" th:href="@{/admin/movies}">
+            <span class="admin-nav__icon">▦</span>
+            <span>映画記事</span>
+        </a>
+        <a class="is-active" th:href="@{/admin/movies/new}">
+            <span class="admin-nav__icon">＋</span>
+            <span>新規作成</span>
+        </a>
+    </nav>
+
+    <div class="admin-sidebar__bottom">
+        <a class="admin-site-link" th:href="@{/}" target="_blank" rel="noopener">
+            <span>公開サイトを見る</span><span>↗</span>
+        </a>
+        <form method="post" th:action="@{/logout}">
+            <button class="admin-logout" type="submit">
+                <span>ログアウト</span><span>→</span>
+            </button>
+        </form>
+    </div>
+</aside>
+
+<header class="admin-mobile-header">
+    <strong>中身｜<span>Cinema Log</span> CMS</strong>
+    <button class="admin-mobile-menu" type="button" aria-label="管理メニューを開く"><i></i></button>
+</header>
+<div class="admin-mobile-backdrop" aria-hidden="true"></div>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <p class="admin-breadcrumb">中身｜Cinema Log / Movies / <strong th:text="${movieId == null ? 'New' : 'Edit'}">Editor</strong></p>
+            <span class="admin-topbar__status">EDITOR READY</span>
+        </div>
+
+        <header class="admin-heading">
+            <div>
+                <p class="admin-heading__eyebrow">EDITOR</p>
+                <h1 th:text="${movieId == null ? '新しい映画記事' : '映画記事を編集'}">新しい映画記事</h1>
+                <p class="admin-heading__description">映画の基本情報、レビュー、配信先、SEO情報を整理して保存します。</p>
+            </div>
+            <a class="admin-secondary-button" th:href="@{/admin/movies}">← 一覧へ戻る</a>
+        </header>
+
+        <form th:object="${movieForm}"
+              th:action="${movieId == null ? '/admin/movies' : '/admin/movies/' + movieId}"
+              method="post">
+            <div class="admin-editor-layout">
+                <div class="admin-editor">
+
+                    <section class="admin-form-card">
+                        <header class="admin-form-card__head">
+                            <h2>基本情報</h2><span>BASIC INFORMATION</span>
+                        </header>
+                        <div class="admin-form-card__body">
+                            <div class="admin-form-grid">
+                                <label class="admin-field admin-field--wide">
+                                    <span class="admin-field__label">映画タイトル <small>必須</small></span>
+                                    <input th:field="*{title}" data-title-input required>
+                                    <small class="admin-field__error" th:errors="*{title}"></small>
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">スラッグ <small>URL</small></span>
+                                    <input th:field="*{slug}" data-slug-input placeholder="空欄なら自動生成">
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">原題</span>
+                                    <input th:field="*{originalTitle}">
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">公開年 <small>必須</small></span>
+                                    <input type="number" th:field="*{releaseYear}" required>
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">ジャンル <small>必須</small></span>
+                                    <input th:field="*{genre}" required>
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">監督</span>
+                                    <input th:field="*{director}">
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">出演者</span>
+                                    <input th:field="*{castMembers}">
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">評価 <small>1.0〜5.0</small></span>
+                                    <input type="number" step="0.1" min="1" max="5" th:field="*{rating}">
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">おすすめ度 <small>5段階</small></span>
+                                    <select th:field="*{recommendation}">
+                                        <option value="1">1</option><option value="2">2</option>
+                                        <option value="3">3</option><option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">視聴日</span>
+                                    <input type="date" th:field="*{watchedAt}">
+                                </label>
+                                <label class="admin-field admin-field--wide">
+                                    <span class="admin-field__label">映画ビジュアルURL <small>横長画像推奨</small></span>
+                                    <input type="url" th:field="*{posterUrl}" placeholder="https://...">
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="admin-form-card">
+                        <header class="admin-form-card__head">
+                            <h2>レビュー</h2><span>ARTICLE CONTENT</span>
+                        </header>
+                        <div class="admin-form-card__body">
+                            <div class="admin-form-grid">
+                                <label class="admin-field admin-field--wide">
+                                    <span class="admin-field__label">一覧・SEO用要約 <small>必須</small></span>
+                                    <textarea rows="4" th:field="*{summary}" required></textarea>
+                                    <small class="admin-field__error" th:errors="*{summary}"></small>
+                                </label>
+                                <label class="admin-field admin-field--wide">
+                                    <span class="admin-field__label">レビュー本文 <small data-review-count>0文字</small></span>
+                                    <textarea rows="19" th:field="*{reviewBody}" data-review-body required></textarea>
+                                    <small class="admin-field__error" th:errors="*{reviewBody}"></small>
+                                </label>
+                                <label class="admin-field admin-field--wide">
+                                    <span class="admin-field__label">心に残ったポイント</span>
+                                    <textarea rows="5" th:field="*{memorablePoint}"></textarea>
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="admin-form-card">
+                        <header class="admin-form-card__head">
+                            <h2>配信サービス</h2><span>STREAMING LINKS</span>
+                        </header>
+                        <div class="admin-form-card__body">
+                            <div class="admin-form-grid">
+                                <label class="admin-field"><span class="admin-field__label">Netflix URL</span><input type="url" th:field="*{netflixUrl}"></label>
+                                <label class="admin-field"><span class="admin-field__label">Prime Video URL</span><input type="url" th:field="*{amazonPrimeUrl}"></label>
+                                <label class="admin-field"><span class="admin-field__label">Disney+ URL</span><input type="url" th:field="*{disneyPlusUrl}"></label>
+                                <label class="admin-field"><span class="admin-field__label">U-NEXT URL</span><input type="url" th:field="*{unextUrl}"></label>
+                                <label class="admin-field"><span class="admin-field__label">Hulu URL</span><input type="url" th:field="*{huluUrl}"></label>
+                                <label class="admin-field"><span class="admin-field__label">ABEMA URL</span><input type="url" th:field="*{abemaUrl}"></label>
+                                <label class="admin-field"><span class="admin-field__label">その他サービス名</span><input th:field="*{otherServiceName}"></label>
+                                <label class="admin-field"><span class="admin-field__label">その他サービスURL</span><input type="url" th:field="*{otherServiceUrl}"></label>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="admin-form-card">
+                        <header class="admin-form-card__head">
+                            <h2>検索表示</h2><span>SEO SETTINGS</span>
+                        </header>
+                        <div class="admin-form-card__body">
+                            <div class="admin-form-grid">
+                                <label class="admin-field">
+                                    <span class="admin-field__label">SEO title</span>
+                                    <input th:field="*{metaTitle}">
+                                </label>
+                                <label class="admin-field">
+                                    <span class="admin-field__label">meta description</span>
+                                    <input th:field="*{metaDescription}">
+                                </label>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <aside class="admin-editor-aside">
+                    <section class="admin-publish-card">
+                        <h2>公開設定</h2>
+                        <label class="admin-field">
+                            <span class="admin-field__label">公開状態</span>
+                            <select th:field="*{status}">
+                                <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}"></option>
+                            </select>
+                        </label>
+                        <div class="admin-publish-actions">
+                            <button class="admin-primary-button" type="submit">保存する</button>
+                            <a class="admin-secondary-button" th:href="@{/admin/movies}">キャンセル</a>
+                        </div>
+
+                        <div class="admin-danger-zone" th:if="${movieId != null}">
+                            <button class="admin-danger-button"
+                                    type="submit"
+                                    th:formaction="@{/admin/movies/{id}/delete(id=${movieId})}"
+                                    formmethod="post"
+                                    onclick="return confirm('この記事を削除しますか？この操作は元に戻せません。')">
+                                この記事を削除
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="admin-help-card">
+                        <h2>編集メモ</h2>
+                        <p>記事を公開すると公開サイトへ反映されます。配信リンクには作品ページ、またはASPで発行したURLを設定してください。</p>
+                    </section>
+                </aside>
+            </div>
+        </form>
+    </main>
+</div>
+<script th:src="@{/js/admin.js}"></script>
+</body>
+</html>

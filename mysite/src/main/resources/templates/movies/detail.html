@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${movie.metaTitle != null && !movie.metaTitle.isBlank() ? movie.metaTitle : movie.title + '｜映画レビュー｜Re:Screen'}"></title>
+    <meta name="description" th:content="${movie.metaDescription != null && !movie.metaDescription.isBlank() ? movie.metaDescription : movie.summary}">
+    <meta property="og:type" content="article">
+    <meta property="og:title" th:content="${movie.title}">
+    <meta property="og:description" th:content="${movie.summary}">
+    <meta property="og:image" th:if="${movie.posterUrl}" th:content="${movie.posterUrl}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="detail-page">
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main>
+    <article>
+        <section class="detail-hero">
+            <div class="detail-ambient" aria-hidden="true"></div>
+            <div class="detail-poster">
+                <img th:if="${movie.posterUrl}" th:src="${movie.posterUrl}" th:alt="|${movie.title}のビジュアル|">
+                <div th:unless="${movie.posterUrl}" class="poster-placeholder" th:text="${movie.title}">中身｜Cinema Log</div>
+            </div>
+
+            <div>
+                <p class="meta" th:text="|${movie.releaseYear} / ${movie.genre} / REVIEW|">META</p>
+                <h1 th:text="${movie.title}">映画タイトル</h1>
+                <p class="original" th:if="${movie.originalTitle}" th:text="${movie.originalTitle}"></p>
+                <p class="lead" th:text="${movie.summary}"></p>
+
+                <div class="detail-scores">
+                    <div class="score"><span>評価</span><strong th:text="${movie.rating}">4.5</strong><small>/ 5.0</small></div>
+                    <div class="score"><span>おすすめ度</span><strong th:text="${movie.recommendation}">5</strong><small>/ 5</small></div>
+                </div>
+
+                <dl>
+                    <div th:if="${movie.director}"><dt>DIRECTOR</dt><dd th:text="${movie.director}"></dd></div>
+                    <div th:if="${movie.castMembers}"><dt>CAST</dt><dd th:text="${movie.castMembers}"></dd></div>
+                    <div th:if="${movie.watchedAt}"><dt>WATCHED</dt><dd th:text="${movie.watchedAt}"></dd></div>
+                </dl>
+            </div>
+        </section>
+
+        <div class="article-body reading-paper">
+            <p class="article-label">REVIEW</p>
+            <div class="review-text" th:text="${movie.reviewBody}"></div>
+            <p class="reading-note">このレビューは、映画を観たときの感情や考えを記録した個人の文章です。</p>
+
+            <aside th:if="${movie.memorablePoint}">
+                <span>心に残ったこと</span>
+                <p th:text="${movie.memorablePoint}"></p>
+            </aside>
+
+            <section class="watch" th:if="${movie.amazonPrimeUrl != null || movie.netflixUrl != null || movie.disneyPlusUrl != null || movie.unextUrl != null || movie.huluUrl != null || movie.abemaUrl != null || movie.otherServiceUrl != null}">
+                <div class="watch-heading">
+                    <div>
+                        <span class="eyebrow">STREAMING</span>
+                        <h2>この映画を観る</h2>
+                    </div>
+                    <p>配信先の作品ページを新しいタブで開きます。</p>
+                </div>
+
+                <div class="watch-links">
+                    <a th:if="${movie.netflixUrl}" th:href="@{/go/{slug}/netflix(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong>Netflix</strong><span>作品ページへ ↗</span></a>
+                    <a th:if="${movie.amazonPrimeUrl}" th:href="@{/go/{slug}/prime(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong>Prime Video</strong><span>作品ページへ ↗</span></a>
+                    <a th:if="${movie.disneyPlusUrl}" th:href="@{/go/{slug}/disney(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong>Disney+</strong><span>作品ページへ ↗</span></a>
+                    <a th:if="${movie.unextUrl}" th:href="@{/go/{slug}/unext(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong>U-NEXT</strong><span>作品ページへ ↗</span></a>
+                    <a th:if="${movie.huluUrl}" th:href="@{/go/{slug}/hulu(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong>Hulu</strong><span>作品ページへ ↗</span></a>
+                    <a th:if="${movie.abemaUrl}" th:href="@{/go/{slug}/abema(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong>ABEMA</strong><span>作品ページへ ↗</span></a>
+                    <a th:if="${movie.otherServiceUrl}" th:href="@{/go/{slug}/other(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong th:text="${movie.otherServiceName}">その他</strong><span>作品ページへ ↗</span></a>
+                </div>
+                <small class="affiliate-note">
+                    配信状況、料金、見放題対象かどうかは各サービスでご確認ください。
+                    今後アフィリエイトリンクを使用する場合も、管理画面で登録したURLへそのまま遷移します。
+                </small>
+            </section>
+        </div>
+    </article>
+
+    <section class="section" th:if="${!related.isEmpty()}">
+        <div class="section-head"><div><span>NEXT</span><h2>Related Films</h2></div></div>
+        <div class="movie-grid">
+            <article class="movie-card" th:each="m : ${related}">
+                <a class="movie-card-main" th:href="@{/movies/{slug}(slug=${m.slug})}">
+                    <div class="poster">
+                        <img th:if="${m.posterUrl}" th:src="${m.posterUrl}" th:alt="|${m.title}のビジュアル|">
+                        <div th:unless="${m.posterUrl}" class="poster-placeholder" th:text="${m.title}">中身｜Cinema Log</div>
+                    </div>
+                    <div class="movie-info">
+                        <p class="meta" th:text="|${m.releaseYear} / ${m.genre}|">2026 / ドラマ</p>
+                        <h2 class="movie-title" th:text="${m.title}">映画タイトル</h2>
+                        <div class="movie-stats">
+                            <span class="movie-stat">評価 <strong th:text="|${m.rating} / 5.0|">4.5 / 5.0</strong></span>
+                            <span class="movie-stat">おすすめ度 <strong th:text="|${m.recommendation} / 5|">5 / 5</strong></span>
+                        </div>
+                        <p class="movie-summary" th:text="${m.summary}"></p>
+                    </div>
+                </a>
+            </article>
+        </div>
+    </section>
+</main>
+
+<p class="affiliate-disclosure">
+    当サイトはアフィリエイト広告を利用しています。リンク経由で申込み・購入が行われた場合、
+    運営者に報酬が発生することがあります。利用者の料金が上乗せされることはありません。
+</p>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div class="page-transition" aria-hidden="true"><span></span><span></span></div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

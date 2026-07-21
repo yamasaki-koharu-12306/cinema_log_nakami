@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: rescreen
+    runtime: docker
+    plan: free
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DB_HOST
+        fromDatabase:
+          name: rescreen-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: rescreen-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: rescreen-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: rescreen-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: rescreen-db
+          property: password
+      - key: ADMIN_USERNAME
+        value: rescreen_admin
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: APP_BASE_URL
+        sync: false
+
+databases:
+  - name: rescreen-db
+    plan: free
+    databaseName: rescreen

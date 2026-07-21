@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header" class="site-header">
+    <a class="site-logo" th:href="@{/}" aria-label="Re:Screen トップページ">
+        中身｜<span>Cinema Log</span>
+    </a>
+
+    <button class="menu-button" type="button"
+            aria-label="メニューを開く"
+            aria-expanded="false"
+            aria-controls="global-navigation">
+        <span class="menu-button__text">MENU</span>
+        <span class="menu-button__lines" aria-hidden="true">
+            <i></i><i></i>
+        </span>
+    </button>
+
+    <div class="navigation-backdrop" aria-hidden="true"></div>
+
+    <nav id="global-navigation"
+         class="global-navigation"
+         aria-label="メインナビゲーション"
+         aria-hidden="true">
+        <div class="global-navigation__head">
+            <span>NAVIGATION</span>
+            <span>中身｜Cinema Log</span>
+        </div>
+
+        <div class="global-navigation__links">
+            <a th:href="@{/movies}">
+                <span>Reviews</span>
+                <small>映画レビュー一覧</small>
+            </a>
+            <a th:href="@{/about}">
+                <span>About</span>
+                <small>このサイトと書き手について</small>
+            </a>
+        </div>
+
+        <p class="global-navigation__note">
+            映画を観ることで、自分自身と向き合う場所。
+        </p>
+    </nav>
+</header>
+
+<footer th:fragment="footer" class="developer-footer">
+    <small>nakami中身｜Cinema Log</small>
+</footer>
+</body>
+</html>

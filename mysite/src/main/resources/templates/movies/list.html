@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>映画レビュー一覧｜中身｜Cinema Log</title>
+    <meta name="description" content="実際に観た映画のレビューを、ジャンル・評価・おすすめ度・配信サービスから探せます。">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="archive-page">
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="page archive">
+    <div class="archive-progress" aria-hidden="true"><span></span></div>
+    <div class="page-title">
+        <span>ARCHIVE</span>
+        <h1>映画レビューを探す</h1>
+        <p>タイトル、評価、おすすめ度、配信サービスから、今の自分に残る一本を。</p>
+    </div>
+
+    <button class="filter-toggle" type="button" aria-expanded="false" aria-controls="movie-filter">
+        <span>検索・絞り込み</span>
+        <i aria-hidden="true"></i>
+    </button>
+
+    <form id="movie-filter" class="movie-search" method="get" th:action="@{/movies}">
+        <div class="search-main">
+            <label class="search-keyword">
+                <span class="search-label">キーワード</span>
+                <input type="search" name="q" th:value="${q}"
+                       placeholder="タイトル・監督・出演者など" autocomplete="off">
+            </label>
+
+            <label>
+                <span class="search-label">ジャンル</span>
+                <select name="genre">
+                    <option value="">すべて</option>
+                    <option th:each="genreItem : ${genres}"
+                            th:value="${genreItem}"
+                            th:text="${genreItem}"
+                            th:selected="${genreItem == genre}">ドラマ</option>
+                </select>
+            </label>
+
+            <label>
+                <span class="search-label">最低評価</span>
+                <select name="minRating">
+                    <option value="">指定なし</option>
+                    <option value="4.5" th:selected="${minRating != null && minRating == 4.5}">4.5以上</option>
+                    <option value="4.0" th:selected="${minRating != null && minRating == 4.0}">4.0以上</option>
+                    <option value="3.5" th:selected="${minRating != null && minRating == 3.5}">3.5以上</option>
+                    <option value="3.0" th:selected="${minRating != null && minRating == 3.0}">3.0以上</option>
+                </select>
+            </label>
+
+            <label>
+                <span class="search-label">おすすめ度</span>
+                <select name="minRecommendation">
+                    <option value="">指定なし</option>
+                    <option value="5" th:selected="${minRecommendation != null && minRecommendation == 5}">5 / 5</option>
+                    <option value="4" th:selected="${minRecommendation != null && minRecommendation == 4}">4以上</option>
+                    <option value="3" th:selected="${minRecommendation != null && minRecommendation == 3}">3以上</option>
+                    <option value="2" th:selected="${minRecommendation != null && minRecommendation == 2}">2以上</option>
+                    <option value="1" th:selected="${minRecommendation != null && minRecommendation == 1}">1以上</option>
+                </select>
+            </label>
+
+            <label>
+                <span class="search-label">公開年</span>
+                <select name="releaseYear">
+                    <option value="">すべて</option>
+                    <option th:each="year : ${releaseYears}"
+                            th:value="${year}"
+                            th:text="${year}"
+                            th:selected="${releaseYear != null && year == releaseYear}">2026</option>
+                </select>
+            </label>
+
+            <label>
+                <span class="search-label">配信サービス</span>
+                <select name="service">
+                    <option value="">すべて</option>
+                    <option value="netflix" th:selected="${service == 'netflix'}">Netflix</option>
+                    <option value="prime" th:selected="${service == 'prime'}">Prime Video</option>
+                    <option value="disney" th:selected="${service == 'disney'}">Disney+</option>
+                    <option value="unext" th:selected="${service == 'unext'}">U-NEXT</option>
+                    <option value="hulu" th:selected="${service == 'hulu'}">Hulu</option>
+                    <option value="abema" th:selected="${service == 'abema'}">ABEMA</option>
+                    <option value="other" th:selected="${service == 'other'}">その他</option>
+                </select>
+            </label>
+
+            <label>
+                <span class="search-label">並び替え</span>
+                <select name="sort">
+                    <option value="newest" th:selected="${sort == 'newest'}">新着順</option>
+                    <option value="oldest" th:selected="${sort == 'oldest'}">古い順</option>
+                    <option value="rating-desc" th:selected="${sort == 'rating-desc'}">評価が高い順</option>
+                    <option value="recommendation-desc" th:selected="${sort == 'recommendation-desc'}">おすすめ度が高い順</option>
+                    <option value="release-year-desc" th:selected="${sort == 'release-year-desc'}">公開年が新しい順</option>
+                    <option value="popular" th:selected="${sort == 'popular'}">よく読まれている順</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="search-actions">
+            <a class="search-reset" th:href="@{/movies}">条件をリセット</a>
+            <button class="search-submit" type="submit">この条件で探す</button>
+        </div>
+    </form>
+
+    <div class="results-bar">
+        <p class="result" th:text="|${movies.totalElements} 件のレビュー|">0件のレビュー</p>
+        <p class="result-note" th:if="${movies.totalElements == 0}">条件を変えてもう一度検索してみてください。</p>
+    </div>
+
+    <div class="movie-grid">
+        <article class="movie-card cinematic-card" th:each="movie, movieStat : ${movies.content}" th:style="|--card-index:${movieStat.index}|">
+            <a class="movie-card-main" th:href="@{/movies/{slug}(slug=${movie.slug})}">
+                <div class="poster">
+                    <span class="poster-shutter" aria-hidden="true"></span>
+                    <img th:if="${movie.posterUrl}" th:src="${movie.posterUrl}"
+                         th:alt="|${movie.title}のビジュアル|">
+                    <div th:unless="${movie.posterUrl}" class="poster-placeholder" th:text="${movie.title}">Re:Screen</div>
+                </div>
+
+                <div class="movie-info">
+                    <p class="meta" th:text="|${movie.releaseYear} / ${movie.genre}|">2026 / ドラマ</p>
+                    <h2 class="movie-title" th:text="${movie.title}">映画タイトル</h2>
+
+                    <div class="movie-stats" aria-label="映画の評価">
+                        <span class="movie-stat">評価 <strong th:text="|${movie.rating} / 5.0|">4.8 / 5.0</strong></span>
+                        <span class="movie-stat movie-stat--recommend">おすすめ度 <strong th:text="|${movie.recommendation} / 5|">5 / 5</strong></span>
+                    </div>
+
+                    <p class="movie-summary" th:text="${movie.summary}">レビューの要約が入ります。</p>
+                    <span class="movie-read-more">レビューを読む</span>
+                </div>
+            </a>
+
+
+            <div class="card-streaming">
+                <div class="streaming-title-row">
+                    <span class="streaming-label">WATCH NOW</span>
+                    <span class="streaming-caption">配信サービスで観る</span>
+                </div>
+
+                <div class="streaming-links"
+                     th:if="${movie.amazonPrimeUrl != null || movie.netflixUrl != null || movie.disneyPlusUrl != null || movie.unextUrl != null || movie.huluUrl != null || movie.abemaUrl != null || movie.otherServiceUrl != null}">
+                    <a class="streaming-link streaming-link--netflix"
+                       th:if="${movie.netflixUrl}"
+                       th:href="@{/go/{slug}/netflix(slug=${movie.slug})}"
+                       target="_blank"
+                       rel="sponsored noopener noreferrer"
+                       aria-label="Netflixの作品ページを新しいタブで開く">
+                        <span>Netflix</span><b>↗</b>
+                    </a>
+                    <a class="streaming-link streaming-link--prime"
+                       th:if="${movie.amazonPrimeUrl}"
+                       th:href="@{/go/{slug}/prime(slug=${movie.slug})}"
+                       target="_blank"
+                       rel="sponsored noopener noreferrer"
+                       aria-label="Prime Videoの作品ページを新しいタブで開く">
+                        <span>Prime Video</span><b>↗</b>
+                    </a>
+                    <a class="streaming-link"
+                       th:if="${movie.disneyPlusUrl}"
+                       th:href="@{/go/{slug}/disney(slug=${movie.slug})}"
+                       target="_blank"
+                       rel="sponsored noopener noreferrer">
+                        <span>Disney+</span><b>↗</b>
+                    </a>
+                    <a class="streaming-link"
+                       th:if="${movie.unextUrl}"
+                       th:href="@{/go/{slug}/unext(slug=${movie.slug})}"
+                       target="_blank"
+                       rel="sponsored noopener noreferrer">
+                        <span>U-NEXT</span><b>↗</b>
+                    </a>
+                    <a class="streaming-link"
+                       th:if="${movie.huluUrl}"
+                       th:href="@{/go/{slug}/hulu(slug=${movie.slug})}"
+                       target="_blank"
+                       rel="sponsored noopener noreferrer">
+                        <span>Hulu</span><b>↗</b>
+                    </a>
+                    <a class="streaming-link"
+                       th:if="${movie.abemaUrl}"
+                       th:href="@{/go/{slug}/abema(slug=${movie.slug})}"
+                       target="_blank"
+                       rel="sponsored noopener noreferrer">
+                        <span>ABEMA</span><b>↗</b>
+                    </a>
+                    <a class="streaming-link"
+                       th:if="${movie.otherServiceUrl}"
+                       th:href="@{/go/{slug}/other(slug=${movie.slug})}"
+                       target="_blank"
+                       rel="sponsored noopener noreferrer">
+                        <span th:text="${movie.otherServiceName != null && !movie.otherServiceName.isBlank() ? movie.otherServiceName : 'その他の配信先'}">その他</span>
+                        <b>↗</b>
+                    </a>
+                </div>
+
+                <p class="streaming-empty"
+                   th:unless="${movie.amazonPrimeUrl != null || movie.netflixUrl != null || movie.disneyPlusUrl != null || movie.unextUrl != null || movie.huluUrl != null || movie.abemaUrl != null || movie.otherServiceUrl != null}">
+                    配信リンクは準備中です
+                </p>
+            </div>
+        </article>
+    </div>
+
+    <nav class="pagination" th:if="${movies.totalPages > 1}" aria-label="映画一覧のページ移動">
+        <a th:if="${movies.hasPrevious()}"
+           th:href="@{/movies(q=${q},genre=${genre},minRating=${minRating},minRecommendation=${minRecommendation},releaseYear=${releaseYear},service=${service},sort=${sort},page=${movies.number - 1})}">← 前へ</a>
+        <span th:text="|${movies.number + 1} / ${movies.totalPages}|">1 / 1</span>
+        <a th:if="${movies.hasNext()}"
+           th:href="@{/movies(q=${q},genre=${genre},minRating=${minRating},minRecommendation=${minRecommendation},releaseYear=${releaseYear},service=${service},sort=${sort},page=${movies.number + 1})}">次へ →</a>
+    </nav>
+</main>
+
+<p class="affiliate-disclosure">
+    当サイトはアフィリエイト広告を利用しています。リンク経由で申込み・購入が行われた場合、
+    運営者に報酬が発生することがあります。利用者の料金が上乗せされることはありません。
+</p>
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div class="page-transition" aria-hidden="true"><span></span><span></span></div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
