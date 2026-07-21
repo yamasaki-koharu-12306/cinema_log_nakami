@@ -48,7 +48,7 @@
             <p class="reading-note">このレビューは、映画を観たときの感情や考えを記録した個人の文章です。</p>
 
             <aside th:if="${movie.memorablePoint}">
-                <span>心に残ったこと</span>
+                <span>心に残った台詞</span>
                 <p th:text="${movie.memorablePoint}"></p>
             </aside>
 
@@ -70,10 +70,10 @@
                     <a th:if="${movie.abemaUrl}" th:href="@{/go/{slug}/abema(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong>ABEMA</strong><span>作品ページへ ↗</span></a>
                     <a th:if="${movie.otherServiceUrl}" th:href="@{/go/{slug}/other(slug=${movie.slug})}" target="_blank" rel="sponsored noopener noreferrer"><strong th:text="${movie.otherServiceName}">その他</strong><span>作品ページへ ↗</span></a>
                 </div>
-                <small class="affiliate-note">
-                    配信状況、料金、見放題対象かどうかは各サービスでご確認ください。
-                    今後アフィリエイトリンクを使用する場合も、管理画面で登録したURLへそのまま遷移します。
-                </small>
+<!--                <small class="affiliate-note">-->
+<!--                    配信状況、料金、見放題対象かどうかは各サービスでご確認ください。-->
+<!--                    今後アフィリエイトリンクを使用する場合も、管理画面で登録したURLへそのまま遷移します。-->
+<!--                </small>-->
             </section>
         </div>
     </article>
@@ -102,10 +102,10 @@
     </section>
 </main>
 
-<p class="affiliate-disclosure">
-    当サイトはアフィリエイト広告を利用しています。リンク経由で申込み・購入が行われた場合、
-    運営者に報酬が発生することがあります。利用者の料金が上乗せされることはありません。
-</p>
+<!--<p class="affiliate-disclosure">-->
+<!--    当サイトはアフィリエイト広告を利用しています。リンク経由で申込み・購入が行われた場合、-->
+<!--    運営者に報酬が発生することがあります。利用者の料金が上乗せされることはありません。-->
+<!--</p>-->
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 <div class="page-transition" aria-hidden="true"><span></span><span></span></div>
 <script th:src="@{/js/app.js}"></script>

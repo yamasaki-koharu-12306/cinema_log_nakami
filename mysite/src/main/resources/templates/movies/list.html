@@ -14,8 +14,8 @@
     <div class="archive-progress" aria-hidden="true"><span></span></div>
     <div class="page-title">
         <span>ARCHIVE</span>
-        <h1>映画レビューを探す</h1>
-        <p>タイトル、評価、おすすめ度、配信サービスから、今の自分に残る一本を。</p>
+        <h1>作品を探す</h1>
+        <p>鑑賞記録から映画を探す。</p>
     </div>
 
     <button class="filter-toggle" type="button" aria-expanded="false" aria-controls="movie-filter">
@@ -43,7 +43,7 @@
             </label>
 
             <label>
-                <span class="search-label">最低評価</span>
+                <span class="search-label">評価</span>
                 <select name="minRating">
                     <option value="">指定なし</option>
                     <option value="4.5" th:selected="${minRating != null && minRating == 4.5}">4.5以上</option>
@@ -218,10 +218,10 @@
     </nav>
 </main>
 
-<p class="affiliate-disclosure">
-    当サイトはアフィリエイト広告を利用しています。リンク経由で申込み・購入が行われた場合、
-    運営者に報酬が発生することがあります。利用者の料金が上乗せされることはありません。
-</p>
+<!--<p class="affiliate-disclosure">-->
+<!--    当サイトはアフィリエイト広告を利用しています。リンク経由で申込み・購入が行われた場合、-->
+<!--    運営者に報酬が発生することがあります。利用者の料金が上乗せされることはありません。-->
+<!--</p>-->
 <footer th:replace="~{fragments/layout :: footer}"></footer>
 <div class="page-transition" aria-hidden="true"><span></span><span></span></div>
 <script th:src="@{/js/app.js}"></script>
