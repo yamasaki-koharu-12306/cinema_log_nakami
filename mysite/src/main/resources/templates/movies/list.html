@@ -139,83 +139,159 @@
             </a>
 
 
-            <div class="card-streaming">
-                <div class="streaming-title-row">
-                    <span class="streaming-label">WATCH NOW</span>
-                    <span class="streaming-caption">配信サービスで観る</span>
-                </div>
+<div class="card-streaming"
+     th:with="hasStreaming=${
+        !#strings.isEmpty(movie.netflixUrl)
+        or !#strings.isEmpty(movie.amazonPrimeUrl)
+        or !#strings.isEmpty(movie.disneyPlusUrl)
+        or !#strings.isEmpty(movie.unextUrl)
+        or !#strings.isEmpty(movie.huluUrl)
+        or !#strings.isEmpty(movie.abemaUrl)
+        or !#strings.isEmpty(movie.otherServiceUrl)
+     }">
 
-                <div class="streaming-links"
-                     th:if="${movie.amazonPrimeUrl != null || movie.netflixUrl != null || movie.disneyPlusUrl != null || movie.unextUrl != null || movie.huluUrl != null || movie.abemaUrl != null || movie.otherServiceUrl != null}">
-                    <a class="streaming-link streaming-link--netflix"
-                       th:if="${movie.netflixUrl}"
-                       th:href="@{/go/{slug}/netflix(slug=${movie.slug})}"
-                       target="_blank"
-                       rel="sponsored noopener noreferrer"
-                       aria-label="Netflixの作品ページを新しいタブで開く">
-                        <span>Netflix</span><b>↗</b>
-                    </a>
-                    <a class="streaming-link streaming-link--prime"
-                       th:if="${movie.amazonPrimeUrl}"
-                       th:href="@{/go/{slug}/prime(slug=${movie.slug})}"
-                       target="_blank"
-                       rel="sponsored noopener noreferrer"
-                       aria-label="Prime Videoの作品ページを新しいタブで開く">
-                        <span>Prime Video</span><b>↗</b>
-                    </a>
-                    <a class="streaming-link"
-                       th:if="${movie.disneyPlusUrl}"
-                       th:href="@{/go/{slug}/disney(slug=${movie.slug})}"
-                       target="_blank"
-                       rel="sponsored noopener noreferrer">
-                        <span>Disney+</span><b>↗</b>
-                    </a>
-                    <a class="streaming-link"
-                       th:if="${movie.unextUrl}"
-                       th:href="@{/go/{slug}/unext(slug=${movie.slug})}"
-                       target="_blank"
-                       rel="sponsored noopener noreferrer">
-                        <span>U-NEXT</span><b>↗</b>
-                    </a>
-                    <a class="streaming-link"
-                       th:if="${movie.huluUrl}"
-                       th:href="@{/go/{slug}/hulu(slug=${movie.slug})}"
-                       target="_blank"
-                       rel="sponsored noopener noreferrer">
-                        <span>Hulu</span><b>↗</b>
-                    </a>
-                    <a class="streaming-link"
-                       th:if="${movie.abemaUrl}"
-                       th:href="@{/go/{slug}/abema(slug=${movie.slug})}"
-                       target="_blank"
-                       rel="sponsored noopener noreferrer">
-                        <span>ABEMA</span><b>↗</b>
-                    </a>
-                    <a class="streaming-link"
-                       th:if="${movie.otherServiceUrl}"
-                       th:href="@{/go/{slug}/other(slug=${movie.slug})}"
-                       target="_blank"
-                       rel="sponsored noopener noreferrer">
-                        <span th:text="${movie.otherServiceName != null && !movie.otherServiceName.isBlank() ? movie.otherServiceName : 'その他の配信先'}">その他</span>
-                        <b>↗</b>
-                    </a>
-                </div>
-
-                <p class="streaming-empty"
-                   th:unless="${movie.amazonPrimeUrl != null || movie.netflixUrl != null || movie.disneyPlusUrl != null || movie.unextUrl != null || movie.huluUrl != null || movie.abemaUrl != null || movie.otherServiceUrl != null}">
-                    配信リンクは準備中です
-                </p>
-            </div>
-        </article>
+    <div class="streaming-title-row">
+        <span class="streaming-label">WATCH NOW</span>
+        <span class="streaming-caption">配信サービスで観る</span>
     </div>
 
-    <nav class="pagination" th:if="${movies.totalPages > 1}" aria-label="映画一覧のページ移動">
-        <a th:if="${movies.hasPrevious()}"
-           th:href="@{/movies(q=${q},genre=${genre},minRating=${minRating},minRecommendation=${minRecommendation},releaseYear=${releaseYear},service=${service},sort=${sort},page=${movies.number - 1})}">← 前へ</a>
-        <span th:text="|${movies.number + 1} / ${movies.totalPages}|">1 / 1</span>
-        <a th:if="${movies.hasNext()}"
-           th:href="@{/movies(q=${q},genre=${genre},minRating=${minRating},minRecommendation=${minRecommendation},releaseYear=${releaseYear},service=${service},sort=${sort},page=${movies.number + 1})}">次へ →</a>
-    </nav>
+    <!-- 1件以上リンクが登録されている場合のみ表示 -->
+    <div class="streaming-links" th:if="${hasStreaming}">
+
+        <!-- Netflix -->
+        <a class="streaming-link streaming-link--netflix"
+           th:if="${!#strings.isEmpty(movie.netflixUrl)}"
+           th:href="@{/go/{slug}/netflix(slug=${movie.slug})}"
+           target="_blank"
+           rel="sponsored noopener noreferrer"
+           aria-label="Netflixの作品ページを新しいタブで開く">
+            <span>Netflix</span>
+            <b aria-hidden="true">↗</b>
+        </a>
+
+        <!-- Prime Video -->
+        <a class="streaming-link streaming-link--prime"
+           th:if="${!#strings.isEmpty(movie.amazonPrimeUrl)}"
+           th:href="@{/go/{slug}/prime(slug=${movie.slug})}"
+           target="_blank"
+           rel="sponsored noopener noreferrer"
+           aria-label="Prime Videoの作品ページを新しいタブで開く">
+            <span>Prime Video</span>
+            <b aria-hidden="true">↗</b>
+        </a>
+
+        <!-- Disney+ -->
+        <a class="streaming-link streaming-link--disney"
+           th:if="${!#strings.isEmpty(movie.disneyPlusUrl)}"
+           th:href="@{/go/{slug}/disney(slug=${movie.slug})}"
+           target="_blank"
+           rel="sponsored noopener noreferrer"
+           aria-label="Disney+の作品ページを新しいタブで開く">
+            <span>Disney+</span>
+            <b aria-hidden="true">↗</b>
+        </a>
+
+        <!-- U-NEXT -->
+        <a class="streaming-link streaming-link--unext"
+           th:if="${!#strings.isEmpty(movie.unextUrl)}"
+           th:href="@{/go/{slug}/unext(slug=${movie.slug})}"
+           target="_blank"
+           rel="sponsored noopener noreferrer"
+           aria-label="U-NEXTの作品ページを新しいタブで開く">
+            <span>U-NEXT</span>
+            <b aria-hidden="true">↗</b>
+        </a>
+
+        <!-- Hulu -->
+        <a class="streaming-link streaming-link--hulu"
+           th:if="${!#strings.isEmpty(movie.huluUrl)}"
+           th:href="@{/go/{slug}/hulu(slug=${movie.slug})}"
+           target="_blank"
+           rel="sponsored noopener noreferrer"
+           aria-label="Huluの作品ページを新しいタブで開く">
+            <span>Hulu</span>
+            <b aria-hidden="true">↗</b>
+        </a>
+
+        <!-- ABEMA -->
+        <a class="streaming-link streaming-link--abema"
+           th:if="${!#strings.isEmpty(movie.abemaUrl)}"
+           th:href="@{/go/{slug}/abema(slug=${movie.slug})}"
+           target="_blank"
+           rel="sponsored noopener noreferrer"
+           aria-label="ABEMAの作品ページを新しいタブで開く">
+            <span>ABEMA</span>
+            <b aria-hidden="true">↗</b>
+        </a>
+
+        <!-- その他の配信サービス -->
+        <a class="streaming-link streaming-link--other"
+           th:if="${!#strings.isEmpty(movie.otherServiceUrl)}"
+           th:href="@{/go/{slug}/other(slug=${movie.slug})}"
+           target="_blank"
+           rel="sponsored noopener noreferrer"
+           th:aria-label="|${!#strings.isEmpty(movie.otherServiceName) ? movie.otherServiceName : 'その他の配信先'}の作品ページを新しいタブで開く|">
+
+            <span th:text="${
+                !#strings.isEmpty(movie.otherServiceName)
+                ? movie.otherServiceName
+                : 'その他の配信先'
+            }">
+                その他の配信先
+            </span>
+
+            <b aria-hidden="true">↗</b>
+        </a>
+
+    </div>
+
+	    <!-- 配信リンクが1件も登録されていない場合 -->
+	    <p class="streaming-empty" th:unless="${hasStreaming}">
+	        配信リンクは準備中です
+	    </p>
+
+	</div> <!-- card-streaming -->
+
+	        </article> <!-- movie-card -->
+	    </div> <!-- movie-grid -->
+
+	    <nav class="pagination"
+	         th:if="${movies.totalPages > 1}"
+	         aria-label="映画一覧のページ移動">
+
+	        <a th:if="${movies.hasPrevious()}"
+	           th:href="@{/movies(
+	               q=${q},
+	               genre=${genre},
+	               minRating=${minRating},
+	               minRecommendation=${minRecommendation},
+	               releaseYear=${releaseYear},
+	               service=${service},
+	               sort=${sort},
+	               page=${movies.number - 1}
+	           )}">
+	            ← 前へ
+	        </a>
+
+	        <span th:text="|${movies.number + 1} / ${movies.totalPages}|">
+	            1 / 1
+	        </span>
+
+	        <a th:if="${movies.hasNext()}"
+	           th:href="@{/movies(
+	               q=${q},
+	               genre=${genre},
+	               minRating=${minRating},
+	               minRecommendation=${minRecommendation},
+	               releaseYear=${releaseYear},
+	               service=${service},
+	               sort=${sort},
+	               page=${movies.number + 1}
+	           )}">
+	            次へ →
+	        </a>
+	    </nav>
+	
 </main>
 
 <!--<p class="affiliate-disclosure">-->
