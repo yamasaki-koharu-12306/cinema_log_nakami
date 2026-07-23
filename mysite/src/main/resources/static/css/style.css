@@ -313,10 +313,26 @@ img {
     outline: none;
 }
 
+.cinema-title {
+    position: relative;
+    z-index: 3;
+    width: min(690px, 88vw);
+    max-width: 100%;
+    padding: 36px 0 34px;
+    display: grid;
+    justify-items: center;
+    color: var(--text);
+    outline: none;
+    box-sizing: border-box;
+}
+
 .cinema-title__word {
     display: flex;
     align-items: baseline;
-    overflow: hidden;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    overflow:visible;
     font-size: clamp(48px, 8vw, 104px);
     line-height: .95;
     letter-spacing: -.075em;
@@ -325,20 +341,51 @@ img {
 .cinema-title__re,
 .cinema-title__screen {
     display: inline-block;
+    min-width: 0;
     opacity: 0;
+    white-space: nowrap;
 }
 
 .cinema-title__re {
     font-weight: 400;
-    transform: translate3d(-80px,0,0);
+    transform: translate3d(-80px, 0, 0);
     animation: titleReIn 1.15s var(--ease-out) .92s forwards;
 }
 
 .cinema-title__screen {
     color: var(--accent);
     font-weight: 600;
-    transform: translate3d(110px,0,0);
+    transform: translate3d(110px, 0, 0);
     animation: titleScreenIn 1.35s var(--ease-out) 1.05s forwards;
+}
+
+@media (max-width: 600px) {
+
+    .cinema-title {
+        width: calc(100vw - 32px);
+        padding: 28px 16px;
+    }
+
+    .cinema-title__word {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        overflow: visible;
+        font-size: clamp(44px, 15vw, 68px);
+        line-height: .9;
+        letter-spacing: -.06em;
+        text-align: center;
+    }
+
+    .cinema-title__re {
+        transform: translate3d(-36px, 0, 0);
+    }
+
+    .cinema-title__screen {
+        transform: translate3d(36px, 0, 0);
+    }
+
 }
 
 .cinema-title__line {
