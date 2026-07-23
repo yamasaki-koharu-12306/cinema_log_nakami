@@ -305,7 +305,7 @@ img {
 .cinema-title {
     position: relative;
     z-index: 3;
-    min-width: min(690px, 82vw);
+    min-width: min(800px, 82vw);
     padding: 36px 0 34px;
     display: grid;
     justify-items: center;
